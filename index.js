@@ -32,7 +32,7 @@ app.get("/api/shorturl/:url", (req, res) => {
 
 app.post("/api/shorturl", (req, res) => {
     let originalUrl = req.body;
-    if (isValid(originalUrl)) {
+    if (isValid(originalUrl.url)) {
         const query = db.prepare(
             "INSERT INTO urls (url) VALUES (@url) RETURNING id, url"
         );
