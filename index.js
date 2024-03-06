@@ -46,8 +46,8 @@ app.post("/api/shorturl", (req, res) => {
 
 function isValid(string) {
     try {
-        new URL(string);
-        return true;
+        const url = new URL(string);
+        if (string.includes("http:") || string.includes("https:")) return true;
     } catch (err) {
         return false;
     }
