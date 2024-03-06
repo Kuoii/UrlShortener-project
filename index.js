@@ -32,13 +32,26 @@ app.get("/api/shorturl/:url", (req, res) => {
 
 app.post("/api/shorturl", (req, res) => {
     let originalUrl = req.body;
-    const query = db.prepare(
-        "INSERT INTO urls (url) VALUES (@url) RETURNING id, url"
-    );
-    const postedQuery = query.get(originalUrl);
-    //console.log(postedQuery);
-    res.json({ original_url: postedQuery.url, short_url: postedQuery.id });
+    if (isValid(originalUrl)) {
+        const query = db.prepare(
+            "INSERT INTO urls (url) VALUES (@url) RETURNING id, url"
+        );
+        const postedQuery = query.get(originalUrl);
+        //console.log(postedQuery);
+        res.json({ original_url: postedQuery.url, short_url: postedQuery.id });
+    } else {
+        res.json({ error: "invalid url" });
+    }
 });
+
+function isValid(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
 
 app.listen(port, function () {
     console.log(`Listening on port ${port}`);
